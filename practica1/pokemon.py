@@ -126,7 +126,7 @@ class Pokemon(ABC):
     
     # Estos dos tienen que ser abstractos ?
     def basic_attack(self, opponent: 'Pokemon') -> int:
-        damage_dealt = max(1, self.strength - opponent.defense)
+        damage_dealt = floor(max(1, self.strength - opponent.defense))
         if (opponent.hp - damage_dealt) < 0:
             opponent.hp = 0
             return damage_dealt
@@ -216,7 +216,8 @@ class GrassPokemon(Pokemon):
         return damage_dealt
 
     def heal(self) -> int:
-        heal = floor(self.healing * self.hp)
+        # considera a self.healing como un str ???
+        heal = floor(float(self.healing) * self.hp)
         self.hp += heal
         if self.hp > self.total_hp:
             self.hp = self.total_hp
@@ -257,7 +258,7 @@ class FirePokemon(Pokemon):
         return damage_dealt
 
     def embers(self, p: Pokemon) -> int:
-        damage_dealt = self.strength * self.temperature
+        damage_dealt = floor(self.strength * float(self.temperature))
         if (p.hp - damage_dealt) < 0:
             p.hp = 0
             return damage_dealt

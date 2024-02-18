@@ -1,4 +1,4 @@
-import sys
+import sys, pokemon, trainer, time
 
 class PokemonSimulator:
     """A class that simulates Pokemon trainers and their Pokemon."""
@@ -31,33 +31,29 @@ class PokemonSimulator:
             hp = int(details[4].split(': ')[1])
             total_hp = hp # Setting total_hp equal to the initial hp
             agility = int(details[5].split(': ')[1])
-            
             # Creating pokemons based on their type
             if pokemon_type == 'Fire':
                 temperature = details[6].split(': ')[1]
-                # TODO: Implement creation of a FirePokemon
-                print ("TODO: Crear un FirePokemon - ", end="")
+                pokemons.append(pokemon.FirePokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, temperature))
                 # Printing the attributes for now
-                print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, temperature: {temperature} ")
+                # print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, temperature: {temperature} ")
             elif pokemon_type == 'Grass':
-                # TODO: Implement creation of a GrassPokemon
                 healing = details[6].split(': ')[1]
+                pokemons.append(pokemon.GrassPokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, healing))
                 # Printing the attributes for now
-                print ("TODO: Crear un GrassPokemon - ", end="")
-                print (f"name: {pokemon_name},  level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, healing: {healing} ")
+                # print (f"name: {pokemon_name},  level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, healing: {healing} ")
             elif pokemon_type == 'Water':
                 surge_mode = False
-                # TODO: Implement creation of a WaterPokemon
-                print ("TODO: Crear un WaterPokemon - ", end="")
+                pokemons.append(pokemon.WaterPokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, surge_mode))
                 # Printing the attributes for now
-                print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, surge_mode: {surge_mode} ")
+                # print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, surge_mode: {surge_mode} ")
             else: 
                 raise ValueError(f"Invalid Pokemon type: {pokemon_type}")
 
         # Reminder to implement the instance creation of Trainer
-        print (f"TODO: Crear instancia de Trainer con nombre {trainer_name} y su lista de pokemon {pokemons} (primero deberas anadir los Pokemon creados a esta lista)\n\n")
+        trainer_complete = trainer.Trainer(trainer_name, pokemons)
         # Function is intended to return a Trainer instance in future development
-        return None
+        return trainer_complete
 
     def parse_file(self, text: str):
         """
@@ -77,6 +73,72 @@ class PokemonSimulator:
 
         return trainer1, trainer2
 
+def special_attacks(attacker, defender):
+    match attacker.pokemon_type:
+        case "Fire":
+            damage = attacker.fire_attack(defender)
+            print(f"{attacker.name} uses a fire_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
+            if defender.is_debilitated() != True:
+                damage = attacker.embers(defender)
+                print(f"{attacker.name} uses embers on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
+        case "Water":
+            damage = attacker.water_attack(defender)
+            print(f"{attacker.name} uses a water_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
+        case "Grass":
+            damage = attacker.grass_attack(defender)
+            print(f"{attacker.name} uses a grass_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
+            healing = attacker.heal()
+            print(f"{attacker.name} is healing! (Healing: +{healing} HP: {attacker.hp})")
+def normal_attacks(attacker, defender):
+    damage = attacker.basic_attack(defender)
+    print(f"{attacker.name} uses a basic_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
+
+def fight(p1,p2):
+    round_counter = 0
+    while p1.is_debilitated() == False and p2.is_debilitated() == False:
+        time.sleep(0.5)
+        round_counter += 1
+        print(f"┌───────── Round {round_counter} ─────────┐")
+        print(f"Fighter 1: {p1.name} ({p1.pokemon_type}) Stats: Level: {p1.level}, ATT: {p1.strength}, DEF: {p1.defense},\
+            AGI: {p1.agility}, HP: {p1.hp}/{p1.total_hp}.")
+        print(f"Figther 2: {p2.name} ({p2.pokemon_type}) Stats: Level: {p2.level}, ATT: {p2.strength}, DEF: {p2.defense},\
+            AGI: {p2.agility}, HP: {p2.hp}/{p2.total_hp}.")
+        if p1.agility > p2.agility:
+            attacker = p1
+            defender = p2
+        elif p2.agility > p1.agility:
+            attacker = p2
+            defender = p1
+        else:
+            attacker = p1
+            defender = p2
+        if round_counter % 2 != 0:
+            # imporares
+            special_attacks(attacker, defender)
+            if defender.is_debilitated() == True:
+                print(f"{defender.name} is debilitated\n")
+                break
+            special_attacks(defender, attacker)
+            if attacker.is_debilitated() == True:
+                print(f"{attacker.name} is debilitated\n")
+                break
+        else:
+            normal_attacks(attacker, defender)
+            if defender.is_debilitated() == True:
+                print(f"{defender.name} is debilitated\n")
+                break
+            normal_attacks(defender, attacker)
+            if attacker.is_debilitated() == True:
+                print(f"{attacker.name} is debilitated\n")
+                break
+
+        '''
+        En el momento en que un Pokémon se debilite, se retira y por tanto no puede atacar. Esto
+        puede ocurrir incluso al principio de una ronda, si el ataque de un Pokémon debilita al
+        oponente, éste no realizará su ataque y el combate entre ambos se da por finalizado. 
+        Hehco bien ?
+        '''
+        
 
 def main():
 
@@ -88,9 +150,35 @@ def main():
         pokemon_text = f.read()
         simulator = PokemonSimulator()
         trainer1, trainer2 = simulator.parse_file(pokemon_text)
-        print ("""TODO: Implement the rest of the practice from here. Define classes and functions and
-        maintain the code structured, respecting the object-oriented programming paradigm""")
-
+        
+        p1 = trainer1.select_first_pokemon()
+        p2 = trainer2.select_first_pokemon()
+        while trainer1.all_debilitated() == False and trainer2.all_debilitated() == False:
+            print(f"=================================\
+                  Battle between: {trainer1.name} vs {trainer2.name} begins!\
+                  {trainer1.name} chooses {p1.name}\
+                  {trainer2.name} chooses {p2.name}\
+                  =================================")
+            fight(p1,p2)
+            if p1.is_debilitated() == True:
+                p1 = trainer1.select_next_pokemon(p2)
+                if p1 is False:
+                    break
+                print(f"{trainer1.name} chooses {p1.name}")
+                
+            elif p2.is_debilitated() == True:
+                p2 = trainer2.select_next_pokemon(p1)
+                if p2 is False:
+                    break
+                print(f"{trainer2.name} chooses {p2.name}")  
+                
+        if trainer1.select_first_pokemon == None:
+            winner = trainer2
+        else:
+            winner = trainer1       
+        print(f"=================================\
+                End of the Battle: {winner.name} wins!\
+                =================================")
 
 if __name__ == '__main__':
     main()
