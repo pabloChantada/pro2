@@ -123,7 +123,7 @@ class Pokemon(ABC):
             self._pokemon_type = value
         else:
             raise ValueError("Pokemon Type must be a non-empty string")
-    
+
     # Estos dos tienen que ser abstractos ?
     def basic_attack(self, opponent: 'Pokemon') -> int:
         damage_dealt = floor(max(1, self.strength - opponent.defense))

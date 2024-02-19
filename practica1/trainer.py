@@ -2,11 +2,13 @@
 TODO: Implement in the file the Trainer class
 """
 from pokemon import *
+
+
 class Trainer():
     def __init__(self, name: str, pokemon: list) -> None:
         self.name = name
         self.pokemon = pokemon
-        
+
     @property
     def name(self):
         # Property (getter) for the name
@@ -19,6 +21,7 @@ class Trainer():
             self._name = value
         else:
             raise ValueError("Name must be a non-empty string")
+
     @property
     def pokemon(self):
         # Property (getter) for the name
@@ -31,7 +34,7 @@ class Trainer():
             self._pokemon = value
         else:
             raise ValueError("The Pokemon list can't be empty")
-    
+
     def all_debilitated(self) -> bool:
         '''
         para que se usa p ??
@@ -45,13 +48,12 @@ class Trainer():
                 return False
         return True
 
-    
     def select_first_pokemon(self) -> Pokemon:
         for actual_pokemon in self.pokemon:
             if actual_pokemon.hp != 0:
                 return actual_pokemon
         return None
-    
+
     def select_next_pokemon(self, p: Pokemon) -> Pokemon:
         if Trainer.select_first_pokemon(self) != None:
             selected = self.pokemon[0]
@@ -61,13 +63,12 @@ class Trainer():
                 if selected.hp == 0:
                     selected = actual_pokemon
                 elif actual_pokemon.effectiveness(p) > selected.effectiveness(p)\
-                    and actual_pokemon.hp != 0:
+                        and actual_pokemon.hp != 0:
                     selected = actual_pokemon
                 elif actual_pokemon.effectiveness(p) == selected.effectiveness(p)\
-                    and actual_pokemon.hp != 0:
+                        and actual_pokemon.hp != 0:
                     if actual_pokemon.level > selected.level:
                         selected = actual_pokemon
             return selected
         else:
             return False
-    

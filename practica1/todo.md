@@ -18,5 +18,5 @@ Pelea entre 2 entrenadores y sus Pokemon
 Mirar mejor la logica
 # Fase 3
 
-los ataques con return son -><bound method GrassPokemon.heal of <pokemon.GrassPokemon object at 0x000002194EAF6310>>
-con print son -> 
+mirar la curacion si esta fbien
+alguno tipos no se atacan ??
