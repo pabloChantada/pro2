@@ -80,8 +80,6 @@ class Pokemon(ABC):
         # Setter for the name
         if isinstance(value, int) and value >= 0:
             self._hp = value
-        elif isinstance(value, float) and value >= 0:
-            self._hp = value
         else:
             raise ValueError("HP must be a positive number")
 
@@ -141,9 +139,12 @@ class Pokemon(ABC):
     # es del propio pokemon o del enemigo
     @abstractmethod
     def effectiveness(self, opponent: 'Pokemon') -> int:
-        return f"{opponent.name} ({opponent.pokemon_type})\
-            Stats: Level: {opponent.level}, ATT: {opponent.strength}, DEF: {opponent.defense}, \
-                AGI: {opponent.agility}, HP: {opponent.hp}/{opponent.total_hp}."
+        raise NotImplementedError
+        
+    def __str__(self):
+        return f"{self.name} ({self.pokemon_type})\
+            Stats: Level: {self.level}, ATT: {self.strength}, DEF: {self.defense}, \
+                AGI: {self.agility}, HP: {self.hp}/{self.total_hp}."
 
 
 class WaterPokemon(Pokemon):
@@ -217,6 +218,8 @@ class GrassPokemon(Pokemon):
 
     def heal(self) -> int:
         # considera a self.healing como un str ???
+        print(type(self.healing))
+        print(type(self.hp))
         heal = floor(float(self.healing) * self.hp)
         self.hp += heal
         if self.hp > self.total_hp:

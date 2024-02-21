@@ -1,5 +1,5 @@
 from estadisticas import update_damage, stats
-import sys
+import sys, time
 import pokemon
 import trainer
 
@@ -99,8 +99,8 @@ def special_attacks(attacker, defender):
             update_damage(attacker, defender, damage)
         case "Grass":
             damage = attacker.grass_attack(defender)
-            print(f"{attacker.name} uses a grass_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
             healing = attacker.heal()
+            print(f"{attacker.name} uses a grass_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
             print(f"{attacker.name} is healing! (Healing: +{healing} HP: {attacker.hp})")
             update_damage(attacker, defender, damage, healing)
 
@@ -116,10 +116,8 @@ def fight(p1, p2):
     while p1.is_debilitated() == False and p2.is_debilitated() == False:
         round_counter += 1
         print(f"┌───────── Round {round_counter} ─────────┐")
-        print(f"Fighter 1: {p1.name} ({p1.pokemon_type}) Stats: Level: {p1.level}, ATT: {p1.strength}, DEF: {p1.defense},\
-            AGI: {p1.agility}, HP: {p1.hp}/{p1.total_hp}.")
-        print(f"Figther 2: {p2.name} ({p2.pokemon_type}) Stats: Level: {p2.level}, ATT: {p2.strength}, DEF: {p2.defense},\
-            AGI: {p2.agility}, HP: {p2.hp}/{p2.total_hp}.")
+        print(f"Fighter 1: {p1}")
+        print(f"Figther 2: {p2}")
         if p1.agility > p2.agility:
             attacker = p1
             defender = p2

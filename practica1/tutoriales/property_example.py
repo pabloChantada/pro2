@@ -26,6 +26,8 @@ class PersonWithGetSet:
         else:
             raise ValueError("Age must be a non-negative integer")
     
+    def __str__(self):
+        return f"{self._name}"
 
 # Define a class using @property and @setter
 class PersonWithProperty:
@@ -63,6 +65,7 @@ class PersonWithProperty:
 if __name__ == "__main__":
     # Using class with explicit getters and setters
     person1 = PersonWithGetSet("John", 30)
+    print(person1)
     print(person1.get_name(), person1.get_age())
     person1.set_name("Bob")
     person1.set_age(35)
