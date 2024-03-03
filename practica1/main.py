@@ -38,13 +38,13 @@ class PokemonSimulator:
             agility = int(details[5].split(': ')[1])
             # Creating pokemons based on their type
             if pokemon_type == 'Fire':
-                temperature = details[6].split(': ')[1]
+                temperature = float(details[6].split(': ')[1])
                 pokemons.append(pokemon.FirePokemon(
                     pokemon_name, level, strength, defense, hp, total_hp, agility, temperature))
                 # Printing the attributes for now
                 # print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, temperature: {temperature} ")
             elif pokemon_type == 'Grass':
-                healing = details[6].split(': ')[1]
+                healing = float(details[6].split(': ')[1])
                 pokemons.append(pokemon.GrassPokemon(
                     pokemon_name, level, strength, defense, hp, total_hp, agility, healing))
                 # Printing the attributes for now
@@ -90,7 +90,7 @@ def special_attacks(attacker, defender):
             print(f"{attacker.name} uses a fire_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})")
             if defender.is_debilitated() != True:
                 damage2 = attacker.embers(defender)
-                print("{attacker.name} uses embers on {defender.name}! (Damage: -{damage2} HP: {defender.hp})")
+                print(f"{attacker.name} uses embers on {defender.name}! (Damage: -{damage2} HP: {defender.hp})")
             update_damage(attacker, defender, damage)
 
         case "Water":
@@ -146,14 +146,6 @@ def fight(p1, p2):
             if attacker.is_debilitated() == True:
                 print(f"{attacker.name} is debilitated\n")
                 break
-
-        '''
-        En el momento en que un Pokémon se debilite, se retira y por tanto no puede atacar. Esto
-        puede ocurrir incluso al principio de una ronda, si el ataque de un Pokémon debilita al
-        oponente, éste no realizará su ataque y el combate entre ambos se da por finalizado. 
-        Hehco bien ?
-        '''
-
 
 def main():
     """

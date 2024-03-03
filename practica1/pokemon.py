@@ -217,10 +217,9 @@ class GrassPokemon(Pokemon):
         return damage_dealt
 
     def heal(self) -> int:
-        # considera a self.healing como un str ???
         print(type(self.healing))
         print(type(self.hp))
-        heal = floor(float(self.healing) * self.hp)
+        heal = floor(self.healing) * self.hp
         self.hp += heal
         if self.hp > self.total_hp:
             self.hp = self.total_hp
@@ -261,7 +260,7 @@ class FirePokemon(Pokemon):
         return damage_dealt
 
     def embers(self, p: Pokemon) -> int:
-        damage_dealt = floor(self.strength * float(self.temperature))
+        damage_dealt = floor(self.strength * self.temperature)
         if (p.hp - damage_dealt) < 0:
             p.hp = 0
             return damage_dealt
@@ -277,18 +276,3 @@ class FirePokemon(Pokemon):
                 return -1
             case "Grass":
                 return 1
-
-
-'''blastoise = WaterPokemon("Blastoise", 20, 25, 18, 50, 50, 15, "Water", False)
-gyarados = WaterPokemon("Gyarados", 30, 30, 20, 80, 80, 12, "Water", True)
-
-venusaur = GrassPokemon("Venusaur", 25, 20, 15, 60, 60, 10, "Grass", 0.1)
-sceptile = GrassPokemon("Sceptile", 20, 25, 12, 45, 45, 20, "Grass", 0.2)
-
-charizard = FirePokemon("Charizard", 30, 35, 20, 60, 60, 15, "Fire", 1000)
-infernoape = FirePokemon("Infernape", 25, 30, 18, 50, 50, 22, "Fire", 2000)
-
-print(blastoise.effectiveness(gyarados))
-print(venusaur.effectiveness(sceptile))
-print(charizard.effectiveness(infernoape))
-'''
