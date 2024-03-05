@@ -188,6 +188,7 @@ def stats():
                                 round(std(value['Water']), 2),
                                 round(std(value['Grass']), 2)]
     # Mostramos los dataframes
+    # NOTA: en battle0 no hay grass vs grass y en battle1 no hay water vs water ni grass vs grass
     print("\nIndividual Data\n-----------------------\n",df_indv)
     print("\nType Data\n-----------------------\n",df_type)
     print("\nType vs Type Standart Deviation\n-----------------------\n",df_type_type_std)

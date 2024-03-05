@@ -1,3 +1,5 @@
+from rich import print
+
 from estadisticas import update_damage, stats
 import sys
 import pokemon
@@ -81,32 +83,33 @@ class PokemonSimulator:
         return trainer1, trainer2
 
 
-def special_attacks(attacker, defender):
+def special_attacks(attacker, defender, attacker_color, defender_color):
     match attacker.pokemon_type:
         case "Fire":
             damage = attacker.fire_attack(defender)
             damage2 = 0
-            print(f"{attacker.name} uses a fire_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})\n")
+            print(f"[{attacker_color}]{attacker.name}[/{attacker_color}] uses a fire_attack on [{defender_color}]{defender.name}[/{defender_color}]! (Damage: -{damage} HP: {defender.hp})\n")
             if defender.is_debilitated() != True:
                 damage2 = attacker.embers(defender)
-                print(f"{attacker.name} uses embers on {defender.name}! (Damage: -{damage2} HP: {defender.hp})\n")
+                print(f"[{attacker_color}]{attacker.name}[/{attacker_color}] uses embers on [{defender_color}]{defender.name}[/{defender_color}]! (Damage: -{damage2} HP: {defender.hp})\n")
             update_damage(attacker, defender, damage)
 
         case "Water":
             damage = attacker.water_attack(defender)
-            print(f"{attacker.name} uses a water_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})\n")
+            print(f"[{attacker_color}]{attacker.name}[/{attacker_color}] uses a water_attack on [{defender_color}]{defender.name}[/{defender_color}]! (Damage: -{damage} HP: {defender.hp})\n")
             update_damage(attacker, defender, damage)
         case "Grass":
             damage = attacker.grass_attack(defender)
             healing = attacker.heal()
-            print(f"{attacker.name} uses a grass_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})\n")
-            print(f"{attacker.name} is healing! (Healing: +{healing} HP: {attacker.hp})\n")
+            print(f"[{attacker_color}]{attacker.name}[/{attacker_color}] uses a grass_attack on [{defender_color}]{defender.name}[/{defender_color}]! (Damage: -{damage} HP: {defender.hp})\n")
+            print(f"[{attacker_color}]{attacker.name}[/{attacker_color}] is [bright_green]healing! (Healing: +{healing} HP: {attacker.hp}[/bright_green])\n")
             update_damage(attacker, defender, damage, healing)
 
 
-def normal_attacks(attacker, defender):
+def normal_attacks(attacker, defender, attacker_color, defender_color):
+
     damage = attacker.basic_attack(defender)
-    print(f"{attacker.name} uses a basic_attack on {defender.name}! (Damage: -{damage} HP: {defender.hp})\n")
+    print(f"[{attacker_color}]{attacker.name}[/{attacker_color}] uses a basic_attack on [{defender_color}]{defender.name}[/{defender_color}]! (Damage: -{damage} HP: {defender.hp})\n")
     update_damage(attacker, defender, damage)
 
 
@@ -115,8 +118,11 @@ def fight(p1, p2):
     while p1.is_debilitated() == False and p2.is_debilitated() == False:
         round_counter += 1
         print(f"\n┌───────── Round {round_counter} ─────────┐")
-        print(f"Fighter 1: {p1}")
-        print(f"Figther 2: {p2}\n")
+        print(f"Fighter 1: [bright_blue]{p1}[/bright_blue]")
+        print(f"Figther 2: [bright_red]{p2}[/bright_red]\n")
+        p1_color = "bright_blue"
+        p2_color = "bright_red"
+        
         if p1.agility > p2.agility:
             attacker = p1
             defender = p2
@@ -126,24 +132,25 @@ def fight(p1, p2):
         else:
             attacker = p1
             defender = p2
+            
         if round_counter % 2 != 0:
             # impares
-            special_attacks(attacker, defender)
+            special_attacks(attacker, defender, p1_color, p2_color)
             if defender.is_debilitated() == True:
-                print(f"{defender.name} is debilitated\n")
+                print(f"[dark_red]{defender.name} is debilitated\n[/dark_red]")
                 break
-            special_attacks(defender, attacker)
+            special_attacks(defender, attacker, p2_color, p1_color)
             if attacker.is_debilitated() == True:
-                print(f"{attacker.name} is debilitated\n")
+                print(f"[dark_red]{attacker.name} is debilitated\n[/dark_red]")
                 break
         else:
-            normal_attacks(attacker, defender)
+            normal_attacks(attacker, defender, p1_color, p2_color)
             if defender.is_debilitated() == True:
-                print(f"{defender.name} is debilitated\n")
+                print(f"[dark_red]{defender.name} is debilitated\n[/dark_red]")
                 break
-            normal_attacks(defender, attacker)
+            normal_attacks(defender, attacker, p2_color, p1_color)
             if attacker.is_debilitated() == True:
-                print(f"{attacker.name} is debilitated\n")
+                print(f"[dark_red]{attacker.name} is debilitated\n[/dark_red]")
                 break
 
 def main():
@@ -158,28 +165,29 @@ def main():
 
         p1 = trainer1.select_first_pokemon()
         p2 = trainer2.select_first_pokemon()
+        print(f"\n\n================================= Battle between: [bright_red]{trainer1.name}[/bright_red] vs [bright_blue]{trainer2.name}[/bright_blue] begins!  [bright_red]{trainer1.name}[/bright_red] chooses [bright_red]{p1.name}[/bright_red] | [bright_blue]{trainer2.name}[/bright_blue] chooses [bright_blue]{p2.name}[/bright_blue] =================================")
         while trainer1.all_debilitated() == False and trainer2.all_debilitated() == False:
-            print(f"\n\n================================= Battle between: {trainer1.name} vs {trainer2.name} begins!  {trainer1.name} chooses {p1.name} | {trainer2.name} chooses {p2.name} =================================")
             fight(p1, p2)
             if p1.is_debilitated() == True:
                 p1 = trainer1.select_next_pokemon(p2)
                 if p1 is False:
                     break
-                print(f"{trainer1.name} chooses {p1.name}")
+                print("=================================")
+                print(f"\n ================================= [bright_red]{trainer1.name}[/bright_red] chooses [bright_red]{p1.name}[/bright_red] =================================")
 
             elif p2.is_debilitated() == True:
                 p2 = trainer2.select_next_pokemon(p1)
                 if p2 is False:
                     break
-                print(f"{trainer2.name} chooses {p2.name}")
+                print(f"\n================================= [bright_blue]{trainer2.name}[/bright_blue] chooses [bright_blue]{p2.name}[/bright_blue] =================================")
 
         if trainer1.select_first_pokemon == None:
             winner = trainer2
         else:
             winner = trainer1
         print(f"=================================\
-                End of the Battle: {winner.name} wins!\
-                =================================")
+            End of the Battle: [green]{winner.name}[/green] wins!\
+            =================================")
 
 
 if __name__ == '__main__':
