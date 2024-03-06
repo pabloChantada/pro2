@@ -1,7 +1,7 @@
-[-] Documentar
+[x] Documentar
     [x] Estadisticas
-    [-] main
-    [-] pokemon
-    [-] trainer
-[-] Manual de Usuario
-[-] Mirar de mejorar la logica
+    [x] main
+    [x] pokemon
+    [x] trainer
+[x] Manual de Usuario
+[x] Mirar de mejorar la logica

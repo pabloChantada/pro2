@@ -78,3 +78,16 @@ print ("##############################\n")
 data_salary.sort_values(by=(target_col, "mean"), ascending=False, inplace=True)
 print (data_salary)
 
+
+info=[["Fire","Water",23],["Fire","Grass",5], ["Fire", "Water",10], ["Electric", "Water", 15], ["Electric", "Grass", 10], ["Electric", "Water", 20]]
+
+data = pandas.DataFrame(info, columns=["Type1","Type2","Damage"])
+
+print(data)
+
+group_col = ["Type1","Type2"]
+target_col = "Damage"
+data_grouped = data.groupby(group_col).agg({target_col :["mean","std"]})
+#data_grouped.sort_values(by=(target_col, "mean"), ascending=False, inplace=True)
+print (data_grouped)
+

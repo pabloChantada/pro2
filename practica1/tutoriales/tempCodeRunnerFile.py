@@ -1,0 +1,1 @@
+["Fire","Water",23],["Fire","Grass",5], ["Fire", "Water",10], ["Electric", "Water", 15], ["Electric", "Grass", 10], ["Electric", "Water", 20]

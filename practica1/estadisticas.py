@@ -1,195 +1,63 @@
-import pandas
-import numpy
-
-'''
-Pablo Chantada Saborido | pablo.chantada@udc.es
-Pablo Verdes Sánchez | p.verdess@udc.es
-'''
-
-# Datos de tipo vs tipo
-type_type_data = {
-    "Fire": {"Fire": [], "Water": [], "Grass": []},
-    "Water": {"Fire": [], "Water": [], "Grass": []},
-    "Grass": {"Fire": [], "Water": [], "Grass": []}
-}
-
-# Datos de tipo
-type_data = {
-    "Fire": {"Damage": [], "Healing": []},
-    "Water": {"Damage": [], "Healing": []},
-    "Grass": {"Damage": [], "Healing": []}
-}
-# Datos individuales
-indv_data = {}
+import pandas as pd
 
 
-def stats_indv(attacker, damage, healing=0):
+class BattleStats:
     '''
-    Registra las estadísticas de daño y curación para un atacante individual.
-
-    Parameters 
-    ----------
-    attacker(object): pokemon que ataca.
-    damage(int): daño infligido por el atacante.
-    healing(int): curación realizada por el atacante. 0 por defecto.
+    Clase que almacena y calcula estadísticas de enfrentamientos entre pokémon.
     '''
-    # Si el atacante no está en el diccionario, lo agregamos
-    if attacker.name not in indv_data:
-        indv_data.setdefault(
-            attacker.name, {"Damage": [damage], "Healing": [healing]})
-    # Si el atacante ya está en el diccionario, actualizamos sus datos
-    else:
-        indv_data[attacker.name]["Damage"].append(damage)
-        indv_data[attacker.name]["Healing"].append(healing)
 
+    def __init__(self):
+        '''
+        Inicializa una instancia de la clase BattleStats.
+        '''
+        self.data_individual = []
+        self.data_type = []
+        self.data_type_type = []
 
-def stats_type(attacker, damage, healing=0):
-    '''
-    Registra las estadísticas de daño y curación para un atacante
-    según su tipo de Pokémon.
+    def store_data(self, attacker, defender, damage, healing):
+        '''
+        Almacena los datos de un enfrentamiento entre dos pokémon.
 
-    Parameters 
-    ----------
-    attacker(object): pokemon que ataca.
-    damage(int): daño infligido por el atacante.
-    healing(int): curación realizada por el atacante. 0 por defecto.
-    '''
-    match attacker.pokemon_type:
-        case "Fire":
-            type_data["Fire"]["Damage"].append(damage)
-            type_data["Fire"]["Healing"].append(healing)
-        case "Grass":
-            type_data["Grass"]["Damage"].append(damage)
-            type_data["Grass"]["Healing"].append(healing)
-        case "Water":
-            type_data["Water"]["Damage"].append(damage)
-            type_data["Water"]["Healing"].append(healing)
+        Parameters 
+        ----------
+        - attacker (Pokemon): El pokémon atacante.
+        - defender (Pokemon): El pokémon defensor.
+        - damage (float): El daño infligido por el atacante.
+        - healing (float): La cantidad de curación realizada por el atacante.
+        '''
+        # Individual -> [Nombre, Daño, Curación]
+        self.data_individual.append([attacker.name, damage, healing])
+        # Tipo -> [Tipo, Daño, Curación]
+        self.data_type.append([attacker.pokemon_type, damage, healing])
+        # Tipo vs Tipo -> [Tipo Atacante, Tipo Defensor, Daño]
+        self.data_type_type.append(
+            [attacker.pokemon_type, defender.pokemon_type, damage])
 
+    def calculate_stats(self):
+        '''
+        Calcula las estadísticas de los enfrentamientos almacenados.
 
-def stats_type_type(attacker, defender, damage):
-    '''
-    Registra las estadísticas de daño y curación para un atacante según su tipo
-    de Pokémon y el tipo del defensor.
+        Returns 
+        -------
+        tuple: Una tupla que contiene tres DataFrames:
+            - individual_pokemons_grouped: Estadísticas agrupadas por pokémon individual.
+            - type_pokemons_grouped: Estadísticas agrupadas por tipo de pokémon.
+            - type_vs_type_grouped: Estadísticas agrupadas por tipo de pokémon atacante y tipo de pokémon defensor.
+        '''
+        # Pokemons individuales
+        individual_pokemons = pd.DataFrame(self.data_individual, columns=[
+                                           "Pokemon", "Avg Damage", "Avg Healing"])
+        individual_pokemons.groupby("Pokemon").agg(
+            {"Avg Damage": ["mean", "std"], "Avg Healing": ["mean", "std"]}).round(2).fillna(0)
+        # Tipos de pokemons
+        type_pokemons = pd.DataFrame(self.data_type, columns=[
+                                     "Type", "Avg Damage", "Avg Healing"])
+        type_pokemons.groupby("Type").agg(
+            {"Avg Damage": ["mean", "std"], "Avg Healing": ["mean", "std"]}).round(2).fillna(0)
+        # Tipos de pokemons vs tipos de pokemons
+        type_vs_type = pd.DataFrame(self.data_type_type, columns=[
+                                    "Attacker", "Defender", "Avg Damage"])
+        type_vs_type.groupby(["Attacker", "Defender"]).agg(
+            {"Avg Damage": ["mean", "std"]}).round(2).fillna(0)
 
-    Parameters 
-    ----------
-    attacker(object): pokemon que ataca.
-    damage(int): daño infligido por el atacante.
-    healing(int): curación realizada por el atacante. 0 por defecto.
-    '''
-    #"attacker.pokemon_type": {"defender.pokemon_type": []}
-    # "Fire": {"Fire": [], "Water": [], "Grass": []},
-    type_type_data[attacker.pokemon_type][defender.pokemon_type].append(damage)
-
-
-def update_damage(attacker, defender, damage, healing=0):
-    '''
-    Actualiza las estadísticas de daño para un atacante. 
-
-    Parameters 
-    ----------
-    attacker(object): pokemon que ataca.
-    defender(object): pokemon que defiende.
-    damage(int): daño infligido por el atacante.
-    healing(int): curación realizada por el atacante. 0 por defecto.
-
-    Esta función actualiza las estadísticas individuales, de tipo y tipo vs tipo.
-    En el caso de Tipo vs Tipo se utiliza el defensor para registrar el daño 
-    infligido por el atacante.
-    '''
-    # Estadísticas individuales
-    stats_indv(attacker, damage, healing)
-    # Estadísticas por tipo
-    stats_type(attacker, damage, healing)
-    # Estadísticas por tipo vs tipo
-    stats_type_type(attacker, defender, damage)
-
-
-def mean(data):
-    '''
-    Calcula la media de una lista de datos.
-
-    Parameters 
-    ----------
-    - data: una lista de números.
-
-    Returns 
-    -------
-    La media de los números en la lista. Si la lista está vacía, retorna 0.
-    '''
-    # Si la lista no está vacía, calculamos la media
-    return numpy.mean(data) if len(data) > 0 else 0
-
-
-def std(data):
-    '''
-    Calcula la deviación estandar de una lista de datos.
-
-    Parameters 
-    ----------
-    - data: una lista de números.
-
-    Returns 
-    -------
-    La desviación estandar de los números en la lista. 
-    Si la lista está vacía, retorna 0.
-    '''
-    # Si la lista no está vacía, calculamos la std
-    return numpy.std(data) if len(data) > 0 else 0
-
-
-def stats():
-    '''
-    Calcula las estadisticas individuales, de Tipo y Tipo vs Tipo de las batallas.
-
-    La función crea y muestra cuatro DataFrames que contienen las siguientes estadísticas:
-    - df_indv: promedio de daño, promedio de curación, desviación estándar de daño y desviación estándar de curación para cada individuo.
-    - df_type: promedio de daño, promedio de curación, desviación estándar de daño y desviación estándar de curación para cada tipo.
-    - df_type_type_mean: promedio de daño para Tipo vs Tipo.
-    - df_type_type_std: desviación estándar de daño para Tipo vs Tipo.
-
-    Los datos utilizados para calcular las estadísticas deben estar en los diccionarios indv_data, type_data y type_type_data.
-    '''
-    # Filas de los dataframes
-    indexes = ["Avg Damage", "Avg Healing", "Std Damage", "Std Healing"] # Individuales y tipo
-    index_type_type = ["Fire", "Water", "Grass"]                         # Tipo vs Tipo
-    
-    df_indv = pandas.DataFrame(indv_data, indexes)
-    df_type = pandas.DataFrame(type_data, indexes)
-    # Hacemos los dataframes de tipo vs tipo cuadrados para una mejor representación
-    df_type_type_mean = pandas.DataFrame(type_type_data, index_type_type, index_type_type)
-    df_type_type_std = pandas.DataFrame(type_type_data, index_type_type, index_type_type)
-
-    # Recorremos cada par clave-valor del diccionario correspondiente y calculamos las estadísticas
-    # añadiendo los resultados a los dataframes
-    
-    # DATAFRAME INDIVIDUAL
-    for key, value in indv_data.items():
-        # Avg Damage, Avg Healing, Std Damage, Std Healing
-        df_indv[key] = [round(mean(value['Damage']), 2),
-                        round(mean(value['Healing']), 2),
-                        round(std(value['Damage']), 2), 
-                        round(std(value['Healing']), 2)]
-    # DATAFRAME TIPO
-    for key, value in type_data.items():
-        # Avg Damage, Avg Healing, Std Damage, Std Healing
-        df_type[key] = [round(mean(value['Damage']), 2),
-                        round(mean(value['Healing']), 2), 
-                        round(std(value['Damage']), 2),
-                        round(std(value['Healing']), 2)]
-    # DATAFRAME TIPO VS TIPO (solo se calcula el daño)
-    for key, value in type_type_data.items():
-        # Media del daño para cada tipo de atacante vs cada tipo de defensor
-        df_type_type_mean[key] = [round(mean(value['Fire']), 2),
-                                round(mean(value['Water']), 2),
-                                round(mean(value['Grass']), 2)]
-        # Desviación estándar del daño para cada tipo de atacante vs cada tipo de defensor
-        df_type_type_std[key] = [round(std(value['Fire']), 2),
-                                round(std(value['Water']), 2),
-                                round(std(value['Grass']), 2)]
-    # Mostramos los dataframes
-    # NOTA: en battle0 no hay grass vs grass y en battle1 no hay water vs water ni grass vs grass
-    print("\nIndividual Data\n-----------------------\n",df_indv)
-    print("\nType Data\n-----------------------\n",df_type)
-    print("\nType vs Type Standart Deviation\n-----------------------\n",df_type_type_std)
-    print("\nType vs Type Mean\n-----------------------\n",df_type_type_mean)
+        return individual_pokemons, type_pokemons, type_vs_type
