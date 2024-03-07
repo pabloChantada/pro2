@@ -383,6 +383,8 @@ class GrassPokemon(Pokemon):
         -------
         int: La cantidad de puntos de salud curados.
         '''
+        if self.hp == self.total_hp:
+            return 0
         heal = floor(self.healing * self.hp)
         self.hp += heal
         # Evitamos que la vida del Pokemon supere su total_hp

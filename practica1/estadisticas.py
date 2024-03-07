@@ -47,17 +47,16 @@ class BattleStats:
         # Pokemons individuales
         individual_pokemons = pd.DataFrame(self.data_individual, columns=[
                                            "Pokemon", "Avg Damage", "Avg Healing"])
-        individual_pokemons.groupby("Pokemon").agg(
+        individual_pokemons_grouped = individual_pokemons.groupby("Pokemon").agg(
             {"Avg Damage": ["mean", "std"], "Avg Healing": ["mean", "std"]}).round(2).fillna(0)
         # Tipos de pokemons
         type_pokemons = pd.DataFrame(self.data_type, columns=[
-                                     "Type", "Avg Damage", "Avg Healing"])
-        type_pokemons.groupby("Type").agg(
-            {"Avg Damage": ["mean", "std"], "Avg Healing": ["mean", "std"]}).round(2).fillna(0)
+                         "Type", "Avg Damage", "Avg Healing"])
+        type_pokemons_grouped = type_pokemons.groupby("Type").agg({"Avg Damage": ["mean", "std"], "Avg Healing": ["mean", "std"]}).round(2).fillna(0)
         # Tipos de pokemons vs tipos de pokemons
         type_vs_type = pd.DataFrame(self.data_type_type, columns=[
                                     "Attacker", "Defender", "Avg Damage"])
-        type_vs_type.groupby(["Attacker", "Defender"]).agg(
+        type_vs_type_grouped = type_vs_type.groupby(["Attacker", "Defender"]).agg(
             {"Avg Damage": ["mean", "std"]}).round(2).fillna(0)
 
-        return individual_pokemons, type_pokemons, type_vs_type
+        return individual_pokemons_grouped, type_pokemons_grouped, type_vs_type_grouped
