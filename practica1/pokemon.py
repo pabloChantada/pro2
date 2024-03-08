@@ -316,6 +316,7 @@ class GrassPokemon(Pokemon):
     - total_hp (int): Los puntos de vida totales del Pokémon.
     - agility (int): La agilidad del Pokémon.
     - healing (float): La cantidad de curación que el Pokémon puede realizar.
+    Si el Pokemon no perdio vida, no se cura.
 
     Methods
     ------- 
