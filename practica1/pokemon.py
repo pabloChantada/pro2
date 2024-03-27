@@ -379,6 +379,8 @@ class GrassPokemon(Pokemon):
     def heal(self) -> int:
         '''
         Método que cura al Pokémon y devuelve la cantidad de puntos de salud curados. Al curar la vida del Pokemon no puede superar su total_hp.
+        La curación realizada no depende de la vida actual del Pokémon, sino de la cantidad de curación que el Pokémon puede realizar.
+        Si pierde 9 de vida, su curación no sera limitara a 9, sino que será limitada por la cantidad de curación que el Pokémon puede realizar.
 
         Returns
         -------
