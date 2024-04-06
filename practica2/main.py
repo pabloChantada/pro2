@@ -140,6 +140,7 @@ def main():
         # Mientras la cola de registros/cola de procesos no esté vacía o haya procesos en ejecución
         while not record_queue.is_empty() or not manager.all_empty() or not manager.all_processes_finished():
             time += 1
+            print(f"Actual Time: {time}", end="\n")
             if not record_queue.is_empty():
             # Si la cola de registros no esta vacia se añade el proceso a las cola correspondiente
                 actual_process = record_queue.dequeue()
