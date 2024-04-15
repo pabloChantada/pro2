@@ -38,3 +38,77 @@ class SortedPositionalList:
         for item in self._data:
             yield item
 
+class Peliculas:
+    def __init__(self, director: str, title: str, year: int, rating: float):
+        self.director = director
+        self.title = title
+        self.year = year
+        self.rating = rating
+        
+    @property
+    def title(self):
+        return self._title
+    @title.setter
+    def title(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._title = value
+        else:
+            raise ValueError("Title must be a non-empty string")
+    
+    @property
+    def director(self):
+        return self._director
+    @director.setter
+    def director(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._director = value
+        else:
+            raise ValueError("Director must be a non-empty string")
+    
+    @property
+    def year(self):
+        return self._year
+
+    @year.setter
+    def year(self, value):
+        if isinstance(value, int) and value > 0:
+            self._year = value
+        else:
+            raise ValueError("Year must be a positive integer")
+
+    @property
+    def rating(self):
+        return self._rating
+
+    @rating.setter
+    def rating(self, value):
+        if isinstance(value, float) and value > 0:
+            self._rating = value
+        else:
+            raise ValueError("Rating must be a positive float")
+    
+    def __lt__(self, other):
+        if not isinstance(other, Peliculas):
+            return NotImplemented
+        return (self.director, self.title, self.year) < (other.director, other.title, other.year)
+    
+    def __le__(self, other):
+        if not isinstance(other, Peliculas):
+            return NotImplemented
+        return (self.director, self.title, self.year) <= (other.director, other.title, other.year)
+    
+    def __gt__(self, other):
+        if not isinstance(other, Peliculas):
+            return NotImplemented
+        return (self.director, self.title, self.year) > (other.director, other.title, other.year)
+    
+    def __eq__(self, other):
+        if not isinstance(other, Peliculas):
+            return NotImplemented
+        return (self.director, self.title, self.year) == (other.director, other.title, other.year)
+    
+    def __getitem__(self, key):
+        return getattr(self,key)
+    
+    def print(self):
+        return f"Title: {self.title} | Director: {self.director} | Year: {self.year} | Rating: {self.rating}"
