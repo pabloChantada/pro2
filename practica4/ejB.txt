@@ -1,0 +1,4 @@
+#nombre,duracion,participantes,level,language,precio
+JavaScript,30,25,B,Gal,16.00
+Rust,90,12,A,Cas,20.00
+# Añadir líneas siguiendo el formato
