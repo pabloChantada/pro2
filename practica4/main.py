@@ -3,8 +3,7 @@ Pablo Chantada Saborido | pablo.chantada@udc.es
 Pablo Verdes Sánchez | p.verdess@udc.es
 '''
 
-from stats import Statistics
-from esentials.avl_tree import AVL
+
 
 def preorder_indent_BST(T, p, d):
     """Print preorder representation of a binary subtree of T rooted at p at depth d.
@@ -15,72 +14,73 @@ def preorder_indent_BST(T, p, d):
         preorder_indent_BST(T, T.left(p), d+1) # left child depth is d+1
         preorder_indent_BST(T, T.right(p), d+1) # right child depth is d+1
         
-def parse_file(lines):
-    '''
-    Añade los datos de un archivo a una SortedPositionalList
-    
-    Parameters
-    ----------
-    lines(file): archivo a dividir
-    '''
 
-    lines = [pass if x[1] == '#' else x.strip("\n").split(",") for x in lines]
-    tree = AVL()
-    cnt = 0
-    for line in lines:
-        # Line = nombre, duración(horas), número de estudiantes, nivel, idioma y precio
-        tree[cnt] = line
-        cnt += 1
-    # IZQ < PADRE; DER > PADRE
-    print("Tree: "); preorder_indent_BST(tree,tree.root(),0)
+
+def higher_profit(course_a, course_b):
+    benefit_a = course_a.price * course_a.students * course_a.duration
+    benefit_b = course_b.price * course_b.students * course_b.duration
+    if benefit_a >= benefit_b:
+        course_a.students += course_b.students  # Sumamos los estudiantes del curso menos rentable
+        return course_a
+    else:
+        course_b.students += course_a.students
+        return course_b
+
     
-    
-def visualize_ofetas():
-    pass
-def more_benefit(objA, objB):
-    benefitA = objA["precio"] * (objA["hora"] / objA["estudiante"])
-    benefitB = objB["precio"] * (objB["hora"] / objB["estudiante"])
-    return objA if objA > objB else objB
- 
-def oferta_agregada(treeA: AVL, treeB: AVL):
-    '''
-    Cada academia
-    Visualizar
-    
-    - Iguales (nombre, nivel, idioma) -> seleccionar mayor beneficio (precio x hora/estudiante)
-    - Nombres iguales -> añadir nombre de compañia
-    '''
-    # Lista de tuplas con los indices de ambos arboles
-    in_both = []
-    # Recorremos ambos arboles, comprobamos los atributos, añadimos los nodos que sean iguales
-    # Doble bucle para recorrer el A y mirar todos los elementos de B
+# Union
+def oferta_agregada(treeA, treeB):
+    combined_offers = []
+    visited_b = set()
+
     for i in treeA:
-        current_node_b = treeA[i]
+        matched = False
         for j in treeB:
-            current_node_b = treeB[j]
-            pass
+            node_a = treeA[i]
+            node_b = treeB[j]
+            if node_a.name == node_b.name:
+                visited_b.add(node_b)
+                if (node_a.level, node_a.language) == (node_b.level, node_b.language):
+                    combined_offers.append(higher_profit(node_a, node_b))
+                    matched = True
+                    break
+                else:
+                    node_a.name += " (Academia A)"
+                    node_b.name += " (Academia B)"
+                    combined_offers.append(node_a)
+                    combined_offers.append(node_b)
+                    matched = True
+        if not matched:
+            combined_offers.append(node_a)
     
-    visualize_ofetas(in_both)            
+    # Agregar los cursos en B que no fueron visitados
+    for j in treeB:
+        node_b = treeB[j]
+        if node_b not in visited_b:
+            combined_offers.append(node_b)
+
+    return combined_offers
+
             
-            
-            
-def oferta_comun():
-    '''
-    Ambas academias
-    Visualizar
-    
-    - Iguales (nombre, nivel, idioma) -> seleccionar mayor beneficio (precio x hora/estudiante)
-    - Nombres iguales -> añadir nombre de compañia     
-    '''
-    pass
+# Interseccion
+def oferta_comun(treeA, treeB):
+    common_courses = []
+    for i in treeA:
+        for j in treeB:
+            node_a = treeA[i]
+            node_b = treeB[j]
+            if (node_a.name, node_a.level, node_a.language) == (node_b.name, node_b.level, node_b.language):
+                common_courses.append(higher_profit(node_a, node_b))
+                break
+
+    return common_courses
 
 
-file = "ejA.txt"
-with open(file) as f:
-    lines = f.readlines()
-    films = parse_file(lines)
+# Añadir un input
+def visualize(data, input):
+    print(f"\nShowing Oferta Agregada:  \n") if input == "2" else print(f"\nShowing Oferta Comun:  \n")
+    for i in range(len(data)):
+        print(data[i])
 
-file = "ejB.txt"
-with open(file) as f:
-    lines = f.readlines()
-    films = parse_file(lines)
+if __name__ == "__main__":
+    from menu import Menu
+    Menu.menu("ejA.txt", "ejB.txt")

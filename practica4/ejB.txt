@@ -1,4 +1,5 @@
-#nombre,duracion,participantes,level,language,precio
-JavaScript,30,25,B,Gal,16.00
-Rust,90,12,A,Cas,20.00
-# A�adir l�neas siguiendo el formato
+Matemáticas, 55, 25, Avanzado, Español, 12
+Literatura, 35, 20, Intermedio, Inglés, 10
+Biología, 40, 22, Básico, Francés, 25
+Historia, 50, 18, Básico, Español, 14
+Física, 70, 12, Avanzado, Alemán, 20
