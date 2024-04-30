@@ -1,4 +1,23 @@
+'''
+Pablo Chantada Saborido | pablo.chantada@udc.es
+Pablo Verdes Sánchez | p.verdess@udc.es
+'''
+
 class Curso:
+    '''
+    Clase que representa un curso.
+    
+    Parameters
+    ----------
+    - name (str) = nombre del curso
+    - duration (int) = duracion en horas del curso
+    - students (int) = numero de estudiantes
+    - level (str) = nivel del curso
+    - language (str) = lenguaje en el que se imparte el curso
+    - price (float) = precio del curso
+    - company (str) = nombre de la compañia a la que pertence el curso, 
+    vacio si no hay dos con el mismo nombre
+    '''
     def __init__(self, name: str, duration: int, students: int, level: str, language: str, price: float) -> None:
         self.name = name
         self.duration = duration
@@ -6,7 +25,7 @@ class Curso:
         self.level = level
         self.language = language
         self.price = price
-        self.company = ""
+        self.company = None
         
     @property
     def name(self):
@@ -73,12 +92,28 @@ class Curso:
         return self._company
     @company.setter
     def company(self, value: str):
-        if isinstance(value, str) and len(value) >= 0:
+        if value is None or isinstance(value, str) and len(value) >= 0:
             self._company = value
         else:
             raise ValueError("Company must be a non-empty string")
 
     def __str__(self):
-        if self.company == "":
-            return f"Name: {self.name} | Duration: {self.duration} | Nº Students: {self.students} | Level: {self.level} | Language: {self.language} | Price: {self.price}"
-        return f"Name: {self.name} | Duration: {self.duration} | Nº Students: {self.students} | Level: {self.level} | Language: {self.language} | Price: {self.price} | Company: {self.company}"
+        '''
+        Devuelve las caracteristicas del Curso en forma de cadena de texto.
+
+        Returns
+        -------
+        str: Cadena que representa al objeto Curso.
+        '''
+        base_info = (
+        f"Name: {self.name} | "
+        f"Duration: {self.duration} | "
+        f"Nº Students: {self.students} | "
+        f"Level: {self.level} | "
+        f"Language: {self.language} | "
+        f"Price: {self.price}"
+        )
+        # Si solo su nombre esta duplicado añadimos la compañia
+        if self.company:
+            return f"{base_info} | Company: {self.company}"
+        return base_info

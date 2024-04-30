@@ -1,5 +1,13 @@
-Matemáticas, 55, 25, Avanzado, Español, 12
-Literatura, 35, 20, Intermedio, Inglés, 10
-Biología, 40, 22, Básico, Francés, 25
-Historia, 50, 18, Básico, Español, 14
-Física, 70, 12, Avanzado, Alemán, 20
+JavaScript,30,25,B,Gal,16.00
+Rust,90,12,A,Cas,20.00
+Python,60,20,C,Eng,25.00
+Java,45,15,B,Eng,18.00
+PHP,60,25,B,Eng,19.00
+C,60,18,A,Eng,22.00
+Perl,90,10,A,Eng,18.00
+Haskell,60,12,B,Eng,20.00
+Lua,45,10,A,Gal,14.00
+Julia,60,10,C,Eng,17.00
+Prolog,60,10,B,Eng,18.00
+Prolog,80,10,B,Cas,35.00
+SQL,60,25,B,Eng,19.00
