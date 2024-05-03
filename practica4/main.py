@@ -5,13 +5,14 @@ Pablo Verdes Sánchez | p.verdess@udc.es
 
 from course import Curso
 
+
 def higher_profit(course_a, course_b):
     '''
     Calcula qué curso de dos tiene un mayor beneficio y devuelve una nueva instancia de Curso
     con la suma de estudiantes de ambos.
 
     Se genera una nueva instacia para evitar modificar el arbol original.
-    
+
     Parameters 
     ----------
     - course_a (Curso): Primer curso para comparar.
@@ -21,7 +22,7 @@ def higher_profit(course_a, course_b):
     -------
     - Curso: Nueva instancia de Curso con el mayor beneficio y la suma de estudiantes de ambos cursos.
     '''
-    
+
     # Mayor beneficio (precio por hora y estudiante)
     benefit_a = course_a.price * course_a.students * course_a.duration
     benefit_b = course_b.price * course_b.students * course_b.duration
@@ -29,12 +30,13 @@ def higher_profit(course_a, course_b):
     if benefit_a >= benefit_b:
         # Hacemos deepcopy del curso para no modificar el original
         new_course = Curso(course_a.name, course_a.duration, course_a.students + course_b.students,
-                            course_a.level, course_a.language, course_a.price)
+                           course_a.level, course_a.language, course_a.price)
     else:
         new_course = Curso(course_b.name, course_b.duration, course_b.students + course_a.students,
-                            course_b.level, course_b.language, course_b.price)
+                           course_b.level, course_b.language, course_b.price)
 
     return new_course
+
 
 def oferta_agregada(treeA, treeB):
     """
@@ -52,7 +54,7 @@ def oferta_agregada(treeA, treeB):
     -------
     - combined_offers (list): Lista de cursos combinados.
     """
-    
+
     combined_offers = []
     # Guardamos los ya visitados para acelerar la ejecución
     visited_b = set()
@@ -79,7 +81,7 @@ def oferta_agregada(treeA, treeB):
         # Si no esta en B, lo añadimos. Es la operación de union
         if not matched:
             combined_offers.append(node_a)
-    
+
     # Agregamos los cursos restantes de B
     for j in treeB:
         # Cojemos el nodo
@@ -88,6 +90,7 @@ def oferta_agregada(treeA, treeB):
             combined_offers.append(node_b)
 
     return combined_offers
+
 
 def oferta_comun(treeA, treeB):
     """
@@ -124,10 +127,12 @@ def visualize(data, input):
     - data (list): Lista de cursos a visualizar.
     - input (int): Identificador del tipo de oferta (2 para agregada, 3 para común).
     '''
-    print(f"\nShowing Oferta Agregada:\n") if input == 2 else print(f"\nShowing Oferta Comun:\n")
+    print(f"\nShowing Oferta Agregada:\n") if input == 2 else print(
+        f"\nShowing Oferta Comun:\n")
     # Imprimimos los cursos del arbol
     for i in range(len(data)):
         print(data[i])
+
 
 if __name__ == "__main__":
     from menu import MenuManager

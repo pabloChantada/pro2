@@ -7,17 +7,20 @@ from esentials.avl_tree import AVL
 from main import oferta_agregada, oferta_comun, visualize
 from stats import Statistics
 from course import Curso
+
+
 class MenuManager:
     '''
     Clase para diseñar un menu por consola.
     '''
+
     def __init__(self):
         '''
         Inicializa un nuevo objeto MenuManager con árboles vacíos para almacenar cursos.
         '''
         self.treeA = None
         self.treeB = None
-    
+
     @staticmethod
     def parse_file(lines):
         '''
@@ -36,23 +39,24 @@ class MenuManager:
         tree = AVL()
         # Usamos enumerate para acceder al arbol directamente para cada linea
         for cnt, line in enumerate(lines):
-            tree[cnt] = Curso(line[0], int(line[1]), int(line[2]), line[3], line[4], float(line[5]))
+            tree[cnt] = Curso(line[0], int(line[1]), int(
+                line[2]), line[3], line[4], float(line[5]))
         return tree
-    
+
     @staticmethod
     def show_menu_options():
         '''
         Imprime las opciones del menú disponibles para el usuario.
         '''
-        print("\n1: Load Files\n2: Offer Aggregated\n3: Common Offer\n4: Calculate Statistics\n5: Exit")
+        print("\n1: Cargar archivos\n2: Oferta Agregada\n3: Oferta Comun\n4: Estadisticas\n5: Salir")
 
     def load_files(self):
         '''
         Carga los datos desde archivos especificados por el usuario y los almacena en árboles AVL.
         '''
         while True:
-            fileA = input("Enter the name of file A: ")
-            fileB = input("Enter the name of file B: ")
+            fileA = input("Nombre del archivo A: ")
+            fileB = input("Nombre del archivo B: ")
             try:
                 with open(fileA) as f:
                     lines = f.readlines()
@@ -60,10 +64,11 @@ class MenuManager:
                 with open(fileB) as f:
                     lines = f.readlines()
                     self.treeB = MenuManager.parse_file(lines)
-                print("Files Loaded.")
+                print("Archivo Cargado.")
                 break
             except FileNotFoundError:
-                print("Error al cargar el archivo. Asegurese de que la ruta sea correcta.")
+                print(
+                    "Error al cargar el archivo. Asegurese de que la ruta sea correcta.")
 
     def oferta_agregada(self):
         '''
@@ -72,15 +77,15 @@ class MenuManager:
         print()
         visualize(oferta_agregada(self.treeA, self.treeB), 2)
         print()
-    
+
     def oferta_comun(self):
         '''
         Ejecuta y visualiza la oferta comun basada en los árboles cargados.
         '''
         print()
         visualize(oferta_comun(self.treeA, self.treeB), 3)
-        print()  
-          
+        print()
+
     def calculate_stats(self):
         '''
         Calcula y muestra las estadísticas de los cursos almacenados en los árboles AVL.
@@ -88,18 +93,22 @@ class MenuManager:
         # Los arboles han sido cargados
         if self.treeA and self.treeB:
             print("\nTree A stats:\n______________________\n")
-            Statistics.mean_language(self.treeA)  # Número medio de alumnos por idioma. 
-            Statistics.mean_level(self.treeA)     # Número medio de alumnos por nivel. 
-            Statistics.total_income(self.treeA)   # Ingresos totales posibles. 
+            # Número medio de alumnos por idioma.
+            Statistics.mean_language(self.treeA)
+            # Número medio de alumnos por nivel.
+            Statistics.mean_level(self.treeA)
+            Statistics.total_income(self.treeA)   # Ingresos totales posibles.
             print()
             print("\nTree B stats:\n______________________\n")
-            Statistics.mean_language(self.treeB)  # Número medio de alumnos por idioma. 
-            Statistics.mean_level(self.treeB)     # Número medio de alumnos por nivel. 
-            Statistics.total_income(self.treeB)   # Ingresos totales posibles. 
+            # Número medio de alumnos por idioma.
+            Statistics.mean_language(self.treeB)
+            # Número medio de alumnos por nivel.
+            Statistics.mean_level(self.treeB)
+            Statistics.total_income(self.treeB)   # Ingresos totales posibles.
             print()
         else:
             print("Debe cargar los archivos primero.\n")
-     
+
     def execute_options(self, user_input):
         '''
         Ejecuta una opción del menú basada en la entrada del usuario.
@@ -121,8 +130,9 @@ class MenuManager:
                 print("Parando la ejecución...")
                 return
             case _:
-                print("Opción incorrecta, vuelva a seleccionar o detenga la ejecución con 5\n")
-    
+                print(
+                    "Opción incorrecta, vuelva a seleccionar o detenga la ejecución con 5\n")
+
     @staticmethod
     def menu():
         '''
@@ -135,5 +145,6 @@ class MenuManager:
         # Mientras no se quiera parar repetimos
         while user_input != "5":
             manager.show_menu_options()
-            user_input = str(input("\n______________________\nEscriba aquí la selección: "))
+            user_input = str(
+                input("\n______________________\nEscriba aquí la selección: "))
             manager.execute_options(user_input)
